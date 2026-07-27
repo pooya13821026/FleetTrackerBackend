@@ -1,0 +1,15 @@
+D:\Monitoring\src\FleetTracker.Application\bin\Debug\net8.0\FleetTracker.Application.deps.json
+D:\Monitoring\src\FleetTracker.Application\bin\Debug\net8.0\FleetTracker.Application.dll
+D:\Monitoring\src\FleetTracker.Application\bin\Debug\net8.0\FleetTracker.Application.pdb
+D:\Monitoring\src\FleetTracker.Application\bin\Debug\net8.0\FleetTracker.Domain.dll
+D:\Monitoring\src\FleetTracker.Application\bin\Debug\net8.0\FleetTracker.Domain.pdb
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.csproj.AssemblyReference.cache
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.AssemblyInfoInputs.cache
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.AssemblyInfo.cs
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.csproj.CoreCompileInputs.cache
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTra.B2837063.Up2Date
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.dll
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\refint\FleetTracker.Application.dll
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.pdb
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\ref\FleetTracker.Application.dll

@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D29B3C79-76D1-4EC1-BEFB-DB32F578BCB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetTracker.Domain", "src\FleetTracker.Domain\FleetTracker.Domain.csproj", "{2581E68C-EF09-40F1-AF07-3A8ACA3D3420}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetTracker.Application", "src\FleetTracker.Application\FleetTracker.Application.csproj", "{43CECC8A-9DA6-450F-A660-C786D4DEC9D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetTracker.Infrastructure", "src\FleetTracker.Infrastructure\FleetTracker.Infrastructure.csproj", "{4588A41F-BB10-4BB3-BB6B-BA0A0107130A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetTracker.Api", "src\FleetTracker.Api\FleetTracker.Api.csproj", "{46EF2616-C193-402C-842B-2495B2056F95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetTracker.Simulator", "src\FleetTracker.Simulator\FleetTracker.Simulator.csproj", "{2813D9DA-23E9-4FC4-947B-D4487AB79AE8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6590D69D-F6BC-4473-9439-E2DABEF97EEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetTracker.Tests", "tests\FleetTracker.Tests\FleetTracker.Tests.csproj", "{A7859552-F471-402F-8A03-807F126F7FD5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2581E68C-EF09-40F1-AF07-3A8ACA3D3420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2581E68C-EF09-40F1-AF07-3A8ACA3D3420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2581E68C-EF09-40F1-AF07-3A8ACA3D3420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2581E68C-EF09-40F1-AF07-3A8ACA3D3420}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43CECC8A-9DA6-450F-A660-C786D4DEC9D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43CECC8A-9DA6-450F-A660-C786D4DEC9D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43CECC8A-9DA6-450F-A660-C786D4DEC9D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43CECC8A-9DA6-450F-A660-C786D4DEC9D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4588A41F-BB10-4BB3-BB6B-BA0A0107130A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4588A41F-BB10-4BB3-BB6B-BA0A0107130A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4588A41F-BB10-4BB3-BB6B-BA0A0107130A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4588A41F-BB10-4BB3-BB6B-BA0A0107130A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46EF2616-C193-402C-842B-2495B2056F95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46EF2616-C193-402C-842B-2495B2056F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46EF2616-C193-402C-842B-2495B2056F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46EF2616-C193-402C-842B-2495B2056F95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2813D9DA-23E9-4FC4-947B-D4487AB79AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2813D9DA-23E9-4FC4-947B-D4487AB79AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2813D9DA-23E9-4FC4-947B-D4487AB79AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2813D9DA-23E9-4FC4-947B-D4487AB79AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7859552-F471-402F-8A03-807F126F7FD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7859552-F471-402F-8A03-807F126F7FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7859552-F471-402F-8A03-807F126F7FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7859552-F471-402F-8A03-807F126F7FD5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2581E68C-EF09-40F1-AF07-3A8ACA3D3420} = {D29B3C79-76D1-4EC1-BEFB-DB32F578BCB0}
+		{43CECC8A-9DA6-450F-A660-C786D4DEC9D6} = {D29B3C79-76D1-4EC1-BEFB-DB32F578BCB0}
+		{4588A41F-BB10-4BB3-BB6B-BA0A0107130A} = {D29B3C79-76D1-4EC1-BEFB-DB32F578BCB0}
+		{46EF2616-C193-402C-842B-2495B2056F95} = {D29B3C79-76D1-4EC1-BEFB-DB32F578BCB0}
+		{2813D9DA-23E9-4FC4-947B-D4487AB79AE8} = {D29B3C79-76D1-4EC1-BEFB-DB32F578BCB0}
+		{A7859552-F471-402F-8A03-807F126F7FD5} = {6590D69D-F6BC-4473-9439-E2DABEF97EEA}
+	EndGlobalSection
+EndGlobal
