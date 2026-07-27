@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D29B3C79-76D1-4EC1-BEFB-DB32F578BCB0}"
-	ProjectSection(SolutionItems) = preProject
-		src\.gitignore = src\.gitignore
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetTracker.Domain", "src\FleetTracker.Domain\FleetTracker.Domain.csproj", "{2581E68C-EF09-40F1-AF07-3A8ACA3D3420}"
 EndProject
