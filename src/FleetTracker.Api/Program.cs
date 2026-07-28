@@ -154,12 +154,24 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<TrackingHub>("/hub/tracking");
 
-// در محیط توسعه، migrations را به‌صورت خودکار اعمال کن
+// در محیط توسعه، schema دیتابیس را به‌صورت خودکار اعمال کن.
+// اگر دیتابیس (SQL Server) در دسترس نبود، هشدار می‌دهیم ولی برنامه را متوقف نمی‌کنیم
+// تا بتوان API را حتی بدون دیتابیس بالا آورد (مثلاً برای بررسی Swagger).
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<FleetTrackerDbContext>();
-    db.Database.EnsureCreated();
+    try
+    {
+        db.Database.EnsureCreated();
+        app.Logger.LogInformation("دیتابیس با موفقیت ایجاد/بررسی شد.");
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogWarning(ex,
+            "اتصال به دیتابیس ناموفق بود. API همچنان اجرا می‌شود ولی عملیات دیتابیس خطا خواهد داد. " +
+            "برای اجرای کامل، SQL Server را روی localhost بالا بیاورید یا از docker compose استفاده کنید.");
+    }
 }
 
 app.Run();

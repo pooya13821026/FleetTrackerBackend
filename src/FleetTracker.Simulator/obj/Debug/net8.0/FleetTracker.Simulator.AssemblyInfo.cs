@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FleetTracker.Simulator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c839f43407ed028d3f8e2125e0c93e1f102a4bd7")]
 [assembly: System.Reflection.AssemblyProductAttribute("FleetTracker.Simulator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FleetTracker.Simulator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

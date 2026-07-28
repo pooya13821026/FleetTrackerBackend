@@ -1,4 +1,4 @@
-using FleetTracker.Api.DTO;
+using FleetTracker.Api.Dtos;
 using FleetTracker.Application.Dtos;
 using FleetTracker.Application.Interfaces;
 using FleetTracker.Domain.Entities;

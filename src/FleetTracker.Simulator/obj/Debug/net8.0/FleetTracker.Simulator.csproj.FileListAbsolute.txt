@@ -56,3 +56,4 @@ D:\Monitoring\src\FleetTracker.Simulator\obj\Debug\net8.0\refint\FleetTracker.Si
 D:\Monitoring\src\FleetTracker.Simulator\obj\Debug\net8.0\FleetTracker.Simulator.pdb
 D:\Monitoring\src\FleetTracker.Simulator\obj\Debug\net8.0\FleetTracker.Simulator.genruntimeconfig.cache
 D:\Monitoring\src\FleetTracker.Simulator\obj\Debug\net8.0\ref\FleetTracker.Simulator.dll
+D:\Monitoring\src\FleetTracker.Simulator\obj\Debug\net8.0\FleetTracker.Simulator.sourcelink.json

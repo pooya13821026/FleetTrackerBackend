@@ -13,3 +13,4 @@ D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Applica
 D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\refint\FleetTracker.Application.dll
 D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.pdb
 D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\ref\FleetTracker.Application.dll
+D:\Monitoring\src\FleetTracker.Application\obj\Debug\net8.0\FleetTracker.Application.sourcelink.json

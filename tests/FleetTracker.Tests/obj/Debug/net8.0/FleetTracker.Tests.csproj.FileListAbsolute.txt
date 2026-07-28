@@ -162,3 +162,4 @@ D:\Monitoring\tests\FleetTracker.Tests\obj\Debug\net8.0\refint\FleetTracker.Test
 D:\Monitoring\tests\FleetTracker.Tests\obj\Debug\net8.0\FleetTracker.Tests.pdb
 D:\Monitoring\tests\FleetTracker.Tests\obj\Debug\net8.0\FleetTracker.Tests.genruntimeconfig.cache
 D:\Monitoring\tests\FleetTracker.Tests\obj\Debug\net8.0\ref\FleetTracker.Tests.dll
+D:\Monitoring\tests\FleetTracker.Tests\obj\Debug\net8.0\FleetTracker.Tests.sourcelink.json

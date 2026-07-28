@@ -17,3 +17,4 @@ D:\Monitoring\src\FleetTracker.Infrastructure\obj\Debug\net8.0\refint\FleetTrack
 D:\Monitoring\src\FleetTracker.Infrastructure\obj\Debug\net8.0\FleetTracker.Infrastructure.pdb
 D:\Monitoring\src\FleetTracker.Infrastructure\obj\Debug\net8.0\FleetTracker.Infrastructure.genruntimeconfig.cache
 D:\Monitoring\src\FleetTracker.Infrastructure\obj\Debug\net8.0\ref\FleetTracker.Infrastructure.dll
+D:\Monitoring\src\FleetTracker.Infrastructure\obj\Debug\net8.0\FleetTracker.Infrastructure.sourcelink.json
