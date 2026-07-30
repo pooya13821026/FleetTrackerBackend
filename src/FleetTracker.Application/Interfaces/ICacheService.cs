@@ -9,4 +9,7 @@ public interface ICacheService
 
     /// <summary>بازخوانی آخرین موقعیت وسیله از کش (بدون رفتن به SQL).</summary>
     Task<LastLocationDto?> GetLastLocationAsync(Guid vehicleId, CancellationToken ct = default);
+
+    /// <summary>بازخوانی آخرین موقعیت همه‌ی وسایل از کش.</summary>
+    Task<Dictionary<Guid, LastLocationDto>> GetAllLastLocationsAsync(CancellationToken ct = default);
 }

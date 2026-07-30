@@ -22,4 +22,9 @@ public class NullCacheService : ICacheService
         _store.TryGetValue(vehicleId, out var location);
         return Task.FromResult(location);
     }
+
+    public Task<Dictionary<Guid, LastLocationDto>> GetAllLastLocationsAsync(CancellationToken ct = default)
+    {
+        return Task.FromResult(new Dictionary<Guid, LastLocationDto>(_store));
+    }
 }

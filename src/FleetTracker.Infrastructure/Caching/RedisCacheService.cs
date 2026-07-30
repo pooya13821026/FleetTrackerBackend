@@ -32,5 +32,27 @@ public class RedisCacheService : ICacheService
         return json.IsNullOrEmpty ? null : JsonSerializer.Deserialize<LastLocationDto>(json!, JsonOptions);
     }
 
+    /// <inheritdoc />
+    public async Task<Dictionary<Guid, LastLocationDto>> GetAllLastLocationsAsync(CancellationToken ct = default)
+    {
+        var server = _redis.GetServer(_redis.GetEndPoints().First());
+        var db = _redis.GetDatabase();
+        var result = new Dictionary<Guid, LastLocationDto>();
+
+        var keys = server.Keys(pattern: "vehicle:*:last-location");
+        foreach (var key in keys)
+        {
+            var json = await db.StringGetAsync(key);
+            if (!json.IsNullOrEmpty)
+            {
+                var location = JsonSerializer.Deserialize<LastLocationDto>(json!, JsonOptions);
+                if (location != null)
+                    result[location.VehicleId] = location;
+            }
+        }
+
+        return result;
+    }
+
     private static string Key(Guid vehicleId) => $"vehicle:{vehicleId}:last-location";
 }

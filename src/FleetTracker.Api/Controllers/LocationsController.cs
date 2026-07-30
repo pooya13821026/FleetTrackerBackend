@@ -12,7 +12,7 @@ namespace FleetTracker.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/locations")]
-public class LocationsController(ILocationService service) : ControllerBase
+public class LocationsController(ILocationService service, ICacheService cache) : ControllerBase
 {
     /// <summary>ثبت یک موقعیت جدید و اجرای کل pipeline (ذخیره، کش، اعلان، بررسی Geofence).</summary>
     [HttpPost]
@@ -21,5 +21,15 @@ public class LocationsController(ILocationService service) : ControllerBase
     {
         await service.IngestAsync(request, ct);
         return Accepted();
+    }
+
+    /// <summary>دریافت آخرین موقعیت شناخته‌شده‌ی همه‌ی وسایل نقلیه.</summary>
+    [HttpGet("last")]
+    [Authorize]
+    [ProducesResponseType(typeof(Dictionary<Guid, LastLocationDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllLastLocations(CancellationToken ct)
+    {
+        var locations = await cache.GetAllLastLocationsAsync(ct);
+        return Ok(locations);
     }
 }
