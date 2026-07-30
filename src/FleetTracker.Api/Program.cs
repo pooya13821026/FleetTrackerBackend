@@ -23,7 +23,6 @@ builder.Host.UseSerilog((ctx, services, cfg) => cfg
 builder.Services.AddDbContext<FleetTrackerDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-// ثبت DbContext به‌عنوان پیاده‌سازی IFleetTrackerDbContext برای لایه‌ی Application
 builder.Services.AddScoped<IFleetTrackerDbContext>(sp =>
     sp.GetRequiredService<FleetTrackerDbContext>());
 
@@ -110,7 +109,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.FromMinutes(1)
         };
 
-        // پشتیبانی از توکن JWT در کوئری استرینگ برای اتصال SignalR (WebSocket نمی‌تواند هدر سفارشی بفرستد)
         opt.Events = new JwtBearerEvents
         {
             OnMessageReceived = ctx =>
@@ -155,9 +153,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<TrackingHub>("/hub/tracking");
 
-// در محیط توسعه، schema دیتابیس را به‌صورت خودکار اعمال کن و داده‌های اولیه را وارد کن.
-// اگر دیتابیس (SQL Server) در دسترس نبود، هشدار می‌دهیم ولی برنامه را متوقف نمی‌کنیم
-// تا بتوان API را حتی بدون دیتابیس بالا آورد (مثلاً برای بررسی Swagger).
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -191,45 +186,151 @@ if (app.Environment.IsDevelopment())
                 NationalCode = "0034567890",
                 PhoneNumber = "09351112233"
             };
+            var driver4 = new FleetTracker.Domain.Entities.Driver
+            {
+                Id = Guid.NewGuid(),
+                FullName = "محمد حسینی",
+                NationalCode = "0045678901",
+                PhoneNumber = "09193334455"
+            };
+            var driver5 = new FleetTracker.Domain.Entities.Driver
+            {
+                Id = Guid.NewGuid(),
+                FullName = "امیر کاظمی",
+                NationalCode = "0056789012",
+                PhoneNumber = "09367778899"
+            };
+            var driver6 = new FleetTracker.Domain.Entities.Driver
+            {
+                Id = Guid.NewGuid(),
+                FullName = "سعید نوری",
+                NationalCode = "0067890123",
+                PhoneNumber = "09125556677"
+            };
+            var driver7 = new FleetTracker.Domain.Entities.Driver
+            {
+                Id = Guid.NewGuid(),
+                FullName = "مرتضی عباسی",
+                NationalCode = "0078901234",
+                PhoneNumber = "09214445566"
+            };
+            var driver8 = new FleetTracker.Domain.Entities.Driver
+            {
+                Id = Guid.NewGuid(),
+                FullName = "بهروز شریفی",
+                NationalCode = "0089012345",
+                PhoneNumber = "09132223344"
+            };
 
-            var vehicle1 = new FleetTracker.Domain.Entities.Vehicle
+            db.Drivers.AddRange(driver1, driver2, driver3, driver4, driver5, driver6, driver7, driver8);
+
+            var vehicles = new FleetTracker.Domain.Entities.Vehicle[]
             {
-                Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
-                PlateNumber = "22الف123",
-                Model = "سمند",
-                Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
-                DriverId = driver1.Id,
-                Driver = driver1
-            };
-            var vehicle2 = new FleetTracker.Domain.Entities.Vehicle
-            {
-                Id = Guid.Parse("11111111-2222-3333-4444-555555555555"),
-                PlateNumber = "11ب456",
-                Model = "پراید",
-                Status = FleetTracker.Domain.Enums.VehicleStatus.Idle,
-                DriverId = driver2.Id,
-                Driver = driver2
-            };
-            var vehicle3 = new FleetTracker.Domain.Entities.Vehicle
-            {
-                Id = Guid.Parse("66666666-7777-8888-9999-aaaaaaaaaaaa"),
-                PlateNumber = "77ت789",
-                Model = "دنا",
-                Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
-                DriverId = driver3.Id,
-                Driver = driver3
-            };
-            var vehicle4 = new FleetTracker.Domain.Entities.Vehicle
-            {
-                Id = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff"),
-                PlateNumber = "55د321",
-                Model = "کی‌ام‌سی",
-                Status = FleetTracker.Domain.Enums.VehicleStatus.Offline
+                new()
+                {
+                    Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+                    PlateNumber = "21ب54367",
+                    Model = "سمند EF7",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
+                    DriverId = driver1.Id,
+                    Driver = driver1
+                },
+                new()
+                {
+                    Id = Guid.Parse("11111111-2222-3333-4444-555555555555"),
+                    PlateNumber = "12الف32145",
+                    Model = "پراید 151",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
+                    DriverId = driver2.Id,
+                    Driver = driver2
+                },
+                new()
+                {
+                    Id = Guid.Parse("22222222-3333-4444-5555-666666666666"),
+                    PlateNumber = "33جی78912",
+                    Model = "دنا پلاس",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Idle,
+                    DriverId = driver3.Id,
+                    Driver = driver3
+                },
+                new()
+                {
+                    Id = Guid.Parse("33333333-4444-5555-6666-777777777777"),
+                    PlateNumber = "44د23456",
+                    Model = "تارا",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
+                    DriverId = driver4.Id,
+                    Driver = driver4
+                },
+                new()
+                {
+                    Id = Guid.Parse("44444444-5555-6666-7777-888888888888"),
+                    PlateNumber = "55س65432",
+                    Model = "کی‌ام‌سی J5",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
+                    DriverId = driver5.Id,
+                    Driver = driver5
+                },
+                new()
+                {
+                    Id = Guid.Parse("55555555-6666-7777-8888-999999999999"),
+                    PlateNumber = "67ص87654",
+                    Model = "رانا پلاس",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Idle,
+                    DriverId = driver6.Id,
+                    Driver = driver6
+                },
+                new()
+                {
+                    Id = Guid.Parse("66666666-7777-8888-9999-aaaaaaaaaaaa"),
+                    PlateNumber = "78ق34567",
+                    Model = "ساینا S",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Offline,
+                    DriverId = driver7.Id,
+                    Driver = driver7
+                },
+                new()
+                {
+                    Id = Guid.Parse("77777777-8888-9999-aaaa-bbbbbbbbbbbb"),
+                    PlateNumber = "89ل98765",
+                    Model = "کوییک R",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
+                    DriverId = driver8.Id,
+                    Driver = driver8
+                },
+                new()
+                {
+                    Id = Guid.Parse("88888888-9999-aaaa-bbbb-cccccccccccc"),
+                    PlateNumber = "11م11223",
+                    Model = "هایما S7",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Active
+                },
+                new()
+                {
+                    Id = Guid.Parse("99999999-aaaa-bbbb-cccc-dddddddddddd"),
+                    PlateNumber = "22ن44556",
+                    Model = "چری آریزو 5",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Idle
+                },
+                new()
+                {
+                    Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-111111111111"),
+                    PlateNumber = "33و77889",
+                    Model = "MVM 315",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Offline
+                },
+                new()
+                {
+                    Id = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-222222222222"),
+                    PlateNumber = "44ه33445",
+                    Model = "لیفان X60",
+                    Status = FleetTracker.Domain.Enums.VehicleStatus.Active
+                },
             };
 
-            db.Vehicles.AddRange(vehicle1, vehicle2, vehicle3, vehicle4);
+            db.Vehicles.AddRange(vehicles);
             db.SaveChanges();
-            app.Logger.LogInformation("چهار وسیله نقلیه نمونه به دیتابیس اضافه شد.");
+            app.Logger.LogInformation("دوازده وسیله نقلیه و هشت راننده نمونه به دیتابیس اضافه شد.");
         }
     }
     catch (Exception ex)
