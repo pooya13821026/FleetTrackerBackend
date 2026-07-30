@@ -154,7 +154,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<TrackingHub>("/hub/tracking");
 
-// در محیط توسعه، schema دیتابیس را به‌صورت خودکار اعمال کن.
+// در محیط توسعه، schema دیتابیس را به‌صورت خودکار اعمال کن و داده‌های اولیه را وارد کن.
 // اگر دیتابیس (SQL Server) در دسترس نبود، هشدار می‌دهیم ولی برنامه را متوقف نمی‌کنیم
 // تا بتوان API را حتی بدون دیتابیس بالا آورد (مثلاً برای بررسی Swagger).
 if (app.Environment.IsDevelopment())
@@ -165,6 +165,53 @@ if (app.Environment.IsDevelopment())
     {
         db.Database.EnsureCreated();
         app.Logger.LogInformation("دیتابیس با موفقیت ایجاد/بررسی شد.");
+
+        // --- Seed Data ---
+        if (!db.Vehicles.Any())
+        {
+            var driver1 = new FleetTracker.Domain.Entities.Driver
+            {
+                Id = Guid.NewGuid(),
+                FullName = "علی محمدی",
+                PhoneNumber = "09121234567"
+            };
+            var driver2 = new FleetTracker.Domain.Entities.Driver
+            {
+                Id = Guid.NewGuid(),
+                FullName = "رضا احمدی",
+                PhoneNumber = "09129876543"
+            };
+
+            var vehicle1 = new FleetTracker.Domain.Entities.Vehicle
+            {
+                Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+                PlateNumber = "22الف123",
+                Model = "سمند",
+                Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
+                DriverId = driver1.Id,
+                Driver = driver1
+            };
+            var vehicle2 = new FleetTracker.Domain.Entities.Vehicle
+            {
+                Id = Guid.Parse("11111111-2222-3333-4444-555555555555"),
+                PlateNumber = "11ب456",
+                Model = "پراید",
+                Status = FleetTracker.Domain.Enums.VehicleStatus.Idle,
+                DriverId = driver2.Id,
+                Driver = driver2
+            };
+            var vehicle3 = new FleetTracker.Domain.Entities.Vehicle
+            {
+                Id = Guid.Parse("66666666-7777-8888-9999-aaaaaaaaaaaa"),
+                PlateNumber = "77ت789",
+                Model = "دنا",
+                Status = FleetTracker.Domain.Enums.VehicleStatus.Offline
+            };
+
+            db.Vehicles.AddRange(vehicle1, vehicle2, vehicle3);
+            db.SaveChanges();
+            app.Logger.LogInformation("سه وسیله نقلیه نمونه به دیتابیس اضافه شد.");
+        }
     }
     catch (Exception ex)
     {
