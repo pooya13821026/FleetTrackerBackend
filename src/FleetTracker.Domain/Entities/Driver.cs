@@ -7,5 +7,6 @@ public class Driver
 {
     public Guid Id { get; set; }
     public string FullName { get; set; } = default!;
+    public string? NationalCode { get; set; }
     public string PhoneNumber { get; set; } = default!;
 }

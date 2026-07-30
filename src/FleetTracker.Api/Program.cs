@@ -54,6 +54,7 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IGeofenceService, GeofenceService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<IRealtimeNotifier, SignalRNotifier>();
 
 // --- SignalR + Controllers ---
@@ -172,14 +173,23 @@ if (app.Environment.IsDevelopment())
             var driver1 = new FleetTracker.Domain.Entities.Driver
             {
                 Id = Guid.NewGuid(),
-                FullName = "علی محمدی",
+                FullName = "حسین رضاخانی",
+                NationalCode = "0012345678",
                 PhoneNumber = "09121234567"
             };
             var driver2 = new FleetTracker.Domain.Entities.Driver
             {
                 Id = Guid.NewGuid(),
                 FullName = "رضا احمدی",
+                NationalCode = "0023456789",
                 PhoneNumber = "09129876543"
+            };
+            var driver3 = new FleetTracker.Domain.Entities.Driver
+            {
+                Id = Guid.NewGuid(),
+                FullName = "علی محمدی",
+                NationalCode = "0034567890",
+                PhoneNumber = "09351112233"
             };
 
             var vehicle1 = new FleetTracker.Domain.Entities.Vehicle
@@ -205,12 +215,21 @@ if (app.Environment.IsDevelopment())
                 Id = Guid.Parse("66666666-7777-8888-9999-aaaaaaaaaaaa"),
                 PlateNumber = "77ت789",
                 Model = "دنا",
+                Status = FleetTracker.Domain.Enums.VehicleStatus.Active,
+                DriverId = driver3.Id,
+                Driver = driver3
+            };
+            var vehicle4 = new FleetTracker.Domain.Entities.Vehicle
+            {
+                Id = Guid.Parse("bbbbbbbb-cccc-dddd-eeee-ffffffffffff"),
+                PlateNumber = "55د321",
+                Model = "کی‌ام‌سی",
                 Status = FleetTracker.Domain.Enums.VehicleStatus.Offline
             };
 
-            db.Vehicles.AddRange(vehicle1, vehicle2, vehicle3);
+            db.Vehicles.AddRange(vehicle1, vehicle2, vehicle3, vehicle4);
             db.SaveChanges();
-            app.Logger.LogInformation("سه وسیله نقلیه نمونه به دیتابیس اضافه شد.");
+            app.Logger.LogInformation("چهار وسیله نقلیه نمونه به دیتابیس اضافه شد.");
         }
     }
     catch (Exception ex)

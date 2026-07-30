@@ -16,6 +16,10 @@ public class DriverConfiguration : IEntityTypeConfiguration<Driver>
                .HasMaxLength(150)
                .IsRequired();
 
+        builder.Property(d => d.NationalCode)
+               .HasMaxLength(10)
+               .IsRequired(false);
+
         builder.Property(d => d.PhoneNumber)
                .HasMaxLength(20)
                .IsRequired();

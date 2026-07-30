@@ -4,6 +4,7 @@ using FleetTracker.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FleetTracker.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(FleetTrackerDbContext))]
-    partial class FleetTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260730184440_ChangeDriver")]
+    partial class ChangeDriver
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
