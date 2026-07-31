@@ -1,8 +1,27 @@
 # Fleet Tracker — بک‌اند (.NET 8)
 
-سیستم ردیابی ناوگان (Mini Fleet Tracker) ساخته‌شده با **.NET 8** و معماری لایه‌ای تمیز (Clean / Layered Architecture).
+سیستم ردیابی لحظه‌ای ناوگان خودرو با معماری Clean Architecture.
 
-> این پروژه فقط بخش **بک‌اند** را شامل می‌شود (بدون فرانت‌اند).
+---
+
+## پروژه چیست؟
+
+یک سیستم مانیتورینگ خودروها به‌صورت لحظه‌ای روی نقشه. هر خودرو یک شبیه‌ساز GPS دارد که هر چند ثانیه موقعیتش را به سرور می‌فرستد. سرور موقعیت را ذخیره، کش و به همه کلاینت‌ها از طریق SignalR اعلام می‌کند. وضعیت خودروها سه حالت دارد:
+
+| وضعیت | رنگ مارکر | رفتار |
+|--------|-----------|-------|
+| **Active** (فعال) | سبز | شبیه‌ساز موقعیت را به‌روز می‌کند → حرکت روی نقشه |
+| **Idle** (توقف) | نارنجی | موقعیت ثابت از دیتابیس → بدون حرکت |
+| **Offline** (آفلاین) | خاکستری | موقعیت ثابت از دیتابیس → بدون حرکت |
+
+قابلیت‌ها:
+- ردیابی لحظه‌ای خودروها روی نقشه (Leaflet + OpenStreetMap)
+- پلاک خودرو به فرمت ایرانی (`[پرچم+شهر] | [۳ رقم] | [حرف] | [۲ رقم]`)
+- نمایش اطلاعات راننده (نام، کد ملی، شماره تماس)
+- فیلتر خودروها بر اساس وضعیت
+- انتخاب خودرو از لیست → زوم روی آن + نمایش اطلاعات راننده
+- هشدار خروج از محدوده مجاز (Geofence)
+- داشبورد آماری
 
 ---
 
@@ -12,12 +31,12 @@
 |------|----------|
 | فریم‌ورک | .NET 8 (ASP.NET Core) |
 | دیتابیس | SQL Server (EF Core 8) |
-| کش | Redis |
-| Realtime | SignalR |
+| کش | Redis (آخرین موقعیت) |
+| Real-time | SignalR |
 | احراز هویت | JWT Bearer |
 | لاگ | Serilog |
 | مستندسازی | Swagger / OpenAPI |
-| تست | xUnit + FluentAssertions |
+| تست | xUnit + FluentAssertions + Moq |
 
 ---
 
@@ -26,99 +45,163 @@
 ```
 FleetTracker.sln
 ├── src/
-│   ├── FleetTracker.Domain          # Entityها و Enumها (بدون وابستگی)
-│   ├── FleetTracker.Application     # منطق بیزینس، DTO، Interface، Service
-│   ├── FleetTracker.Infrastructure  # EF Core DbContext، Migration، Redis Cache
-│   ├── FleetTracker.Api             # Controller، Hub، Program.cs، JWT
-│   └── FleetTracker.Simulator       # شبیه‌ساز GPS (Worker Service)
-└── tests/
-    └── FleetTracker.Tests           # تست‌های واحد
+│   ├── FleetTracker.Domain           # Entityها و Enumها (بدون وابستگی)
+│   ├── FleetTracker.Application      # بیزینس منطق، DTO، Interface، Service
+│   ├── FleetTracker.Infrastructure   # EF Core، Redis Cache، پیاده‌سازی واقعی
+│   ├── FleetTracker.Api              # Controller، Hub، Program.cs، JWT، SeedData
+│   └── FleetTracker.Simulator        # شبیه‌ساز GPS (BackgroundService)
+├── tests/
+│   └── FleetTracker.Tests            # تست‌های واحد (29 تست)
+└── docker-compose.yml                # اجرای کامل با Docker
 ```
 
 ### جریان وابستگی
 ```
 Domain  ←  Application  ←  Infrastructure  ←  Api
-                                  ↑
-                          Application (دسترسی به داده از طریق IFleetTrackerDbContext)
 ```
-- `Domain` به هیچ لایه‌ای وابسته نیست (فقط POCO).
-- `Application` فقط به Interfaceها وابسته است (نه EF Core مستقیم).
-- `Infrastructure` پیاده‌سازی واقعی را ارائه می‌دهد (SQL Server، Redis، SignalR).
+- `Domain` به هیچ لایه‌ای وابسته نیست
+- `Application` فقط به Interfaceها وابسته است
+- `Infrastructure` پیاده‌سازی واقعی (SQL Server, Redis) را ارائه می‌دهد
+
+---
+
+## پیش‌نیازها
+
+### روش ۱: Docker (توصیه‌شده)
+- Docker Desktop نصب باشد
+
+### روش ۲: اجرای محلی
+- .NET 8 SDK
+- SQL Server (LocalDB یا نسخه کامل)
+- Redis (اختیاری — اگر نباشد از حافظه in-memory استفاده می‌شود)
+
+---
+
+## راه‌اندازی با Docker
+
+```bash
+cd D:\Monitoring
+docker compose up --build
+```
+
+سرویس‌ها:
+| سرویس | پورت | توضیح |
+|--------|------|-------|
+| api | `5000` | API اصلی + Swagger |
+| simulator | — | شبیه‌ساز GPS |
+| sqlserver | `1433` | SQL Server 2022 |
+| redis | `6379` | Redis Cache |
+
+Swagger: http://localhost:5000/swagger
+
+---
+
+## راه‌اندازی محلی (بدون Docker)
+
+### ۱. دیتابیس و Redis
+- SQL Server: اگر LocalDB دارید، خودکار ساخته می‌شود
+- Redis: اگر ندارید، در `appsettings.Development.json` مقدار `UseRedis` را `false` کنید
+
+### ۲. اجرای API
+```bash
+cd D:\Monitoring
+dotnet run --project src/FleetTracker.Api
+```
+
+### ۳. اجرای شبیه‌ساز
+```bash
+dotnet run --project src/FleetTracker.Simulator
+```
+
+### ۴. ریست دیتابیس (اختیاری)
+اگر می‌خواهید داده‌های نمونه دوباره ساخته شوند:
+```bash
+dotnet ef database drop --project src/FleetTracker.Infrastructure --startup-project src/FleetTracker.Api
+```
+سپس API را دوباره اجرا کنید — خودکار seed می‌شود.
+
+---
+
+## اطلاعات ورود
+
+| فیلد | مقدار |
+|------|-------|
+| نام کاربری | `admin` |
+| رمز عبور | `Admin@123456` |
+
+---
+
+## داده‌های نمونه (Seed)
+
+با اولین اجرای API در حالت Development، ۱۲ خودرو و ۸ راننده نمونه ساخته می‌شوند:
+
+### خودروها
+
+| پلاک | مدل | وضعیت |
+|------|------|--------|
+| 21ب54367 | سمند EF7 | ✅ Active |
+| 12الف32145 | پراید 151 | ✅ Active |
+| 33جی78912 | دنا پلاس | ⏸ Idle |
+| 44د23456 | تارا | ✅ Active |
+| 55س65432 | کی‌ام‌سی J5 | ✅ Active |
+| 67ص87654 | رانا پلاس | ⏸ Idle |
+| 78ق34567 | ساینا S | 🔴 Offline |
+| 89ل98765 | کوییک R | ✅ Active |
+| 11م11223 | هایما S7 | ✅ Active |
+| 22ن44556 | چری آریزو 5 | ⏸ Idle |
+| 33و77889 | MVM 315 | 🔴 Offline |
+| 44ه33445 | لیفان X60 | ✅ Active |
+
+- خودروهای **Active**: توسط شبیه‌ساز حرکت می‌کنند (۱۲ مسیر مختلف در تهران)
+- خودروهای **Idle** و **Offline**: موقعیت ثابت دارند و روی نقشه نمایش داده می‌شوند
 
 ---
 
 ## Endpointهای API
 
-احراز هویت (بدون توکن):
-- `POST /api/auth/login` — ورود و دریافت JWT
+### احراز هویت
+| Method | Endpoint | توضیح |
+|--------|----------|-------|
+| POST | `/api/auth/login` | ورود و دریافت JWT |
 
-وسایل نقلیه:
-- `GET /api/vehicles` — لیست همه وسایل
-- `GET /api/vehicles/{id}` — جزئیات یک وسیله
-- `POST /api/vehicles` — ثبت وسیله جدید
-- `GET /api/vehicles/{id}/locations/last` — آخرین موقعیت (از Redis)
-- `POST /api/vehicles/{id}/geofence` — تعریف حوزه‌ی مجاز
+### وسایل نقلیه
+| Method | Endpoint | توضیح |
+|--------|----------|-------|
+| GET | `/api/vehicles` | لیست همه خودروها + آخرین موقعیت |
+| GET | `/api/vehicles/{id}` | جزئیات یک خودرو |
+| POST | `/api/vehicles` | ثبت خودروی جدید |
 
-موقعیت:
-- `POST /api/locations` — ثبت موقعیت (hot-path برای دستگاه‌ها/شبیه‌ساز)
+### رانندگان
+| Method | Endpoint | توضیح |
+|--------|----------|-------|
+| GET | `/api/drivers` | لیست رانندگان |
+| GET | `/api/drivers/{id}` | جزئیات راننده |
+| POST | `/api/drivers` | ثبت راننده جدید |
+| PUT | `/api/drivers/{id}` | ویرایش راننده |
+| DELETE | `/api/drivers/{id}` | حذف راننده |
 
-هشدارها:
-- `GET /api/alerts/open` — هشدارهای باز
-- `GET /api/alerts/vehicle/{vehicleId}` — هشدارهای یک وسیله
-- `POST /api/alerts/{id}/resolve` — رفع هشدار
+### موقعیت
+| Method | Endpoint | توضیح |
+|--------|----------|-------|
+| POST | `/api/locations` | ثبت موقعیت (برای شبیه‌ساز) |
+| GET | `/api/locations/last` | آخرین موقعیت همه خودروها |
 
-داشبورد:
-- `GET /api/dashboard/summary` — خلاصه‌ی وضعیت ناوگان
+### هشدارها
+| Method | Endpoint | توضیح |
+|--------|----------|-------|
+| GET | `/api/alerts/open` | هشدارهای باز |
+| GET | `/api/alerts/vehicle/{id}` | هشدارهای یک وسیله |
+| POST | `/api/alerts/{id}/resolve` | رفع هشدار |
 
-Realtime:
-- `Hub /hub/tracking` — رویدادهای `locationUpdated` و `alertCreated`
+### داشبورد
+| Method | Endpoint | توضیح |
+|--------|----------|-------|
+| GET | `/api/dashboard/summary` | خلاصه وضعیت ناوگان |
 
----
-
-## اجرا با Docker
-
-```bash
-docker compose up --build
-```
-
-این دستور سرویس‌های زیر را راه‌اندازی می‌کند:
-- **api** روی پورت `5000` (Swagger: http://localhost:5000/swagger)
-- **simulator** — شروع به ارسال موقعیت می‌کند (پس از تعیین VehicleId)
-- **sqlserver** روی پورت `1433`
-- **redis** روی پورت `6379`
-
-### اعمال Migration (پس از اولین اجرا)
-```bash
-dotnet ef database update \
-  --project src/FleetTracker.Infrastructure \
-  --startup-project src/FleetTracker.Api
-```
-
----
-
-## اجرای محلی (بدون Docker)
-
-1. SQL Server و Redis را روی `localhost` داشته باشید.
-2. Environment را روی `Development` بگذارید (`UseRedis=false` در `appsettings.Development.json` تنظیم شده — کش in-memory استفاده می‌شود).
-3. API را اجرا کنید:
-   ```bash
-   dotnet run --project src/FleetTracker.Api
-   ```
-4. برای شبیه‌ساز، `Simulator:ApiUrl` را به `http://localhost:5000` تغییر دهید.
-
-### ورود پیش‌فرض
-- یوزر: `admin`
-- پسورد: `Admin@123456`
-
----
-
-## نکات طراحی مهم
-
-- **جداکردن hot-data از cold-data:** آخرین موقعیت فقط از Redis خوانده می‌شود؛ SQL فقط برای تاریخچه است.
-- **تشخیص گذار وضعیت Geofence:** state قبلی (داخل/خارج) صریحاً روی `Geofence.IsCurrentlyInside` نگه‌داری می‌شود تا هشدار تکراری تولید نشود.
-- **ایندکس حیاتی:** `IX_LocationLog_Vehicle_RecordedAt` برای کوئری تاریخچه‌ی موقعیت روی جدولی که به‌سرعت رشد می‌کند.
-- **انتزاع DbContext:** `IFleetTrackerDbContext` در Application قرار دارد تا وابستگی دایره‌ای به Infrastructure برقرار نشود.
-- **پشتیبانی از توکن در WebSocket:** JWT از query string برای اتصال SignalR پشتیبانی می‌کند.
+### Real-time
+| نوع | مسیر | رویدادها |
+|-----|------|----------|
+| SignalR | `/hub/tracking` | `locationUpdated`, `alertCreated` |
 
 ---
 
@@ -128,7 +211,19 @@ dotnet ef database update \
 dotnet test tests/FleetTracker.Tests
 ```
 
-۱۱ تست واحد شامل:
+**29 تست** شامل:
 - محاسبات Geofence (Haversine، حالت‌های مرزی)
 - سرویس هشدار (ایجاد، رفع، فیلتر)
+- سرویس خودرو (CRUD + آخرین موقعیت)
+- سرویس راننده (CRUD + اعتبارسنجی)
 - سرویس کش in-memory
+
+---
+
+## نکات طراحی مهم
+
+- **جداکردن hot-data از cold-data:** آخرین موقعیت فقط از Redis خوانده می‌شود؛ SQL فقط برای تاریخچه
+- **تشخیص گذار وضعیت Geofence:** state قبلی صریحاً نگه‌داری می‌شود تا هشدار تکراری تولید نشود
+- **فقط Active:** شبیه‌ساز فقط برای خودروهای Active موقعیت ارسال می‌کند
+- **موقعیت اولیه:** همه خودروها (شامل Idle/Offline) موقعیت ثابت از seed دارند
+- **پشتیبانی از توکن در WebSocket:** JWT از query string برای SignalR پشتیبانی می‌کند

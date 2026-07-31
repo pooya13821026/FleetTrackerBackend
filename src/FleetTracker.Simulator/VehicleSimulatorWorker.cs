@@ -6,12 +6,12 @@ namespace FleetTracker.Simulator;
 /// شبیه‌ساز GPS: برای همه‌ی وسایل نقلیه به‌صورت همزمان موقعیت تولید و ارسال می‌کند.
 /// هر وسیله مسیر و سرعت متفاوتی دارد.
 /// </summary>
-public class VehicleSimulatorWorker : BackgroundService
+public class VehicleSimulatorWorker(
+    HttpClient httpClient,
+    ILogger<VehicleSimulatorWorker> logger,
+    IConfiguration config)
+    : BackgroundService
 {
-    private readonly HttpClient _httpClient;
-    private readonly ILogger<VehicleSimulatorWorker> _logger;
-    private readonly IConfiguration _config;
-
     // ۱۲ مسیر متفاوت در تهران — هر خودرو یک مسیر اختصاصی دارد
     private static readonly List<List<RoutePoint>> Routes = new()
     {
@@ -139,21 +139,14 @@ public class VehicleSimulatorWorker : BackgroundService
         },
     };
 
-    public VehicleSimulatorWorker(HttpClient httpClient, ILogger<VehicleSimulatorWorker> logger, IConfiguration config)
-    {
-        _httpClient = httpClient;
-        _logger = logger;
-        _config = config;
-    }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var apiUrl = _config["Simulator:ApiUrl"] ?? "http://api:8080";
-        var intervalSec = _config.GetValue("Simulator:IntervalSeconds", 3);
+        var apiUrl = config["Simulator:ApiUrl"] ?? "http://api:8080";
+        var intervalSec = config.GetValue("Simulator:IntervalSeconds", 3);
         var ingestUrl = $"{apiUrl.TrimEnd('/')}/api/locations";
 
         // دریافت لیست شناسه خودروها از تنظیمات
-        var vehicleIdsConfig = _config["Simulator:VehicleIds"];
+        var vehicleIdsConfig = config["Simulator:VehicleIds"];
         var vehicleIds = new List<Guid>();
 
         if (!string.IsNullOrWhiteSpace(vehicleIdsConfig))
@@ -169,18 +162,18 @@ public class VehicleSimulatorWorker : BackgroundService
         // اگه لیست تنظیم نشده، از VehicleId قدیمی استفاده کن
         if (vehicleIds.Count == 0)
         {
-            var singleId = _config["Simulator:VehicleId"];
+            var singleId = config["Simulator:VehicleId"];
             if (!string.IsNullOrWhiteSpace(singleId) && Guid.TryParse(singleId, out var id))
                 vehicleIds.Add(id);
         }
 
         if (vehicleIds.Count == 0)
         {
-            _logger.LogError("هیچ شناسه خودرویی تنظیم نشده است. شبیه‌ساز متوقف می‌شود.");
+            logger.LogError("هیچ شناسه خودرویی تنظیم نشده است. شبیه‌ساز متوقف می‌شود.");
             return;
         }
 
-        _logger.LogInformation("شبیه‌ساز برای {Count} خودرو شروع شد. ارسال به {Url} هر {Sec} ثانیه",
+        logger.LogInformation("شبیه‌ساز برای {Count} خودرو شروع شد. ارسال به {Url} هر {Sec} ثانیه",
             vehicleIds.Count, ingestUrl, intervalSec);
 
         // وضعیت هر خودرو — هر خودرو مسیر اختصاصی خودش را دارد
@@ -231,23 +224,23 @@ public class VehicleSimulatorWorker : BackgroundService
             }
         }
 
-        _logger.LogInformation("شبیه‌ساز متوقف شد.");
+        logger.LogInformation("شبیه‌ساز متوقف شد.");
     }
 
     private async Task SendLocation(string url, object payload, Guid vehicleId, CancellationToken ct)
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync(url, payload, ct);
+            var response = await httpClient.PostAsJsonAsync(url, payload, ct);
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogWarning("ارسال موقعیت خودرو {VehicleId} — API کد {Code} برگرداند",
+                logger.LogWarning("ارسال موقعیت خودرو {VehicleId} — API کد {Code} برگرداند",
                     vehicleId, response.StatusCode);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "ارسال موقعیت خودرو {VehicleId} با خطا مواجه شد", vehicleId);
+            logger.LogError(ex, "ارسال موقعیت خودرو {VehicleId} با خطا مواجه شد", vehicleId);
         }
     }
 

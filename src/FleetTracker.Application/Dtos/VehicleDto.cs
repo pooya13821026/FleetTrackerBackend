@@ -3,22 +3,25 @@ using FleetTracker.Domain.Enums;
 namespace FleetTracker.Application.Dtos;
 
 /// <summary>
-/// نمای خلاصه‌ی یک وسیله نقلیه با اطلاعات راننده.
+/// نمای خلاصه‌ی یک وسیله نقلیه با اطلاعات راننده و آخرین موقعیت.
 /// </summary>
-/// <param name="Id">شناسه‌ی یکتای وسیله.</param>
-/// <param name="PlateNumber">شماره پلاک.</param>
-/// <param name="Model">مدل وسیله.</param>
-/// <param name="Status">وضعیت عملیاتی.</param>
-/// <param name="DriverId">شناسه‌ی راننده (در صورت وجود).</param>
-/// <param name="DriverName">نام کامل راننده (در صورت وجود).</param>
-/// <param name="DriverNationalCode">کد ملی راننده (در صورت وجود).</param>
-/// <param name="DriverPhoneNumber">شماره تماس راننده (در صورت وجود).</param>
-public sealed record VehicleDto(
-    Guid Id,
-    string PlateNumber,
-    string Model,
-    VehicleStatus Status,
-    Guid? DriverId,
-    string? DriverName = null,
-    string? DriverNationalCode = null,
-    string? DriverPhoneNumber = null);
+public sealed record VehicleDto
+{
+    public Guid Id { get; init; }
+    public string PlateNumber { get; init; } = "";
+    public string Model { get; init; } = "";
+    public VehicleStatus Status { get; init; }
+    public Guid? DriverId { get; init; }
+    public string? DriverName { get; init; }
+    public string? DriverNationalCode { get; init; }
+    public string? DriverPhoneNumber { get; init; }
+
+    /// <summary>آخرین عرض جغرافیایی (null اگر موقعیتی ثبت نشده).</summary>
+    public double? LastLatitude { get; init; }
+    /// <summary>آخرین طول جغرافیایی.</summary>
+    public double? LastLongitude { get; init; }
+    /// <summary>آخرین سرعت (km/h).</summary>
+    public double? LastSpeedKmh { get; init; }
+    /// <summary>زمان آخرین موقعیت.</summary>
+    public DateTimeOffset? LastRecordedAtUtc { get; init; }
+}

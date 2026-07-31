@@ -123,4 +123,31 @@ public class AlertServiceTests
         var result = await cache.GetLastLocationAsync(Guid.NewGuid());
         result.Should().BeNull();
     }
+
+    [Fact]
+    public async Task NullCacheService_GetAllLastLocations_ReturnsAllStored()
+    {
+        var cache = new NullCacheService();
+        var id1 = Guid.NewGuid();
+        var id2 = Guid.NewGuid();
+        var loc1 = new LastLocationDto(id1, 35.70, 51.40, 50, DateTimeOffset.UtcNow);
+        var loc2 = new LastLocationDto(id2, 35.80, 51.50, 60, DateTimeOffset.UtcNow);
+
+        await cache.SetLastLocationAsync(id1, loc1);
+        await cache.SetLastLocationAsync(id2, loc2);
+
+        var result = await cache.GetAllLastLocationsAsync();
+
+        result.Should().HaveCount(2);
+        result[id1].Latitude.Should().BeApproximately(35.70, 0.001);
+        result[id2].Latitude.Should().BeApproximately(35.80, 0.001);
+    }
+
+    [Fact]
+    public async Task NullCacheService_GetAllLastLocations_EmptyStore_ReturnsEmpty()
+    {
+        var cache = new NullCacheService();
+        var result = await cache.GetAllLastLocationsAsync();
+        result.Should().BeEmpty();
+    }
 }

@@ -17,15 +17,33 @@ public class VehicleService : IVehicleService
         return await _db.Vehicles
             .AsNoTracking()
             .Include(v => v.Driver)
-            .Select(v => new VehicleDto(
-                v.Id,
-                v.PlateNumber,
-                v.Model,
-                v.Status,
-                v.DriverId,
-                v.Driver != null ? v.Driver.FullName : null,
-                v.Driver != null ? v.Driver.NationalCode : null,
-                v.Driver != null ? v.Driver.PhoneNumber : null))
+            .Select(v => new VehicleDto
+            {
+                Id = v.Id,
+                PlateNumber = v.PlateNumber,
+                Model = v.Model,
+                Status = v.Status,
+                DriverId = v.DriverId,
+                DriverName = v.Driver != null ? v.Driver.FullName : null,
+                DriverNationalCode = v.Driver != null ? v.Driver.NationalCode : null,
+                DriverPhoneNumber = v.Driver != null ? v.Driver.PhoneNumber : null,
+                LastLatitude = v.LocationLogs
+                    .OrderByDescending(l => l.RecordedAtUtc)
+                    .Select(l => (double?)l.Latitude)
+                    .FirstOrDefault(),
+                LastLongitude = v.LocationLogs
+                    .OrderByDescending(l => l.RecordedAtUtc)
+                    .Select(l => (double?)l.Longitude)
+                    .FirstOrDefault(),
+                LastSpeedKmh = v.LocationLogs
+                    .OrderByDescending(l => l.RecordedAtUtc)
+                    .Select(l => (double?)l.SpeedKmh)
+                    .FirstOrDefault(),
+                LastRecordedAtUtc = v.LocationLogs
+                    .OrderByDescending(l => l.RecordedAtUtc)
+                    .Select(l => (DateTimeOffset?)l.RecordedAtUtc)
+                    .FirstOrDefault(),
+            })
             .ToListAsync(ct);
     }
 
@@ -36,15 +54,33 @@ public class VehicleService : IVehicleService
             .AsNoTracking()
             .Include(v => v.Driver)
             .Where(v => v.Id == id)
-            .Select(v => new VehicleDto(
-                v.Id,
-                v.PlateNumber,
-                v.Model,
-                v.Status,
-                v.DriverId,
-                v.Driver != null ? v.Driver.FullName : null,
-                v.Driver != null ? v.Driver.NationalCode : null,
-                v.Driver != null ? v.Driver.PhoneNumber : null))
+            .Select(v => new VehicleDto
+            {
+                Id = v.Id,
+                PlateNumber = v.PlateNumber,
+                Model = v.Model,
+                Status = v.Status,
+                DriverId = v.DriverId,
+                DriverName = v.Driver != null ? v.Driver.FullName : null,
+                DriverNationalCode = v.Driver != null ? v.Driver.NationalCode : null,
+                DriverPhoneNumber = v.Driver != null ? v.Driver.PhoneNumber : null,
+                LastLatitude = v.LocationLogs
+                    .OrderByDescending(l => l.RecordedAtUtc)
+                    .Select(l => (double?)l.Latitude)
+                    .FirstOrDefault(),
+                LastLongitude = v.LocationLogs
+                    .OrderByDescending(l => l.RecordedAtUtc)
+                    .Select(l => (double?)l.Longitude)
+                    .FirstOrDefault(),
+                LastSpeedKmh = v.LocationLogs
+                    .OrderByDescending(l => l.RecordedAtUtc)
+                    .Select(l => (double?)l.SpeedKmh)
+                    .FirstOrDefault(),
+                LastRecordedAtUtc = v.LocationLogs
+                    .OrderByDescending(l => l.RecordedAtUtc)
+                    .Select(l => (DateTimeOffset?)l.RecordedAtUtc)
+                    .FirstOrDefault(),
+            })
             .FirstOrDefaultAsync(ct);
     }
 
@@ -73,15 +109,17 @@ public class VehicleService : IVehicleService
             }
         }
 
-        return new VehicleDto(
-            vehicle.Id,
-            vehicle.PlateNumber,
-            vehicle.Model,
-            vehicle.Status,
-            vehicle.DriverId,
-            driverName,
-            driverNationalCode,
-            driverPhoneNumber);
+        return new VehicleDto
+        {
+            Id = vehicle.Id,
+            PlateNumber = vehicle.PlateNumber,
+            Model = vehicle.Model,
+            Status = vehicle.Status,
+            DriverId = vehicle.DriverId,
+            DriverName = driverName,
+            DriverNationalCode = driverNationalCode,
+            DriverPhoneNumber = driverPhoneNumber,
+        };
     }
 
     /// <inheritdoc />
